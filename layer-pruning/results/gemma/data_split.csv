@@ -1,0 +1,4 @@
+language,eval_articles,calib_articles,eval_chunks,calib_chunks,eval_tokens,calib_tokens
+en,65,122,100,200,25600,51200
+hi,58,112,100,200,25600,51200
+mr,58,113,100,200,25600,51200

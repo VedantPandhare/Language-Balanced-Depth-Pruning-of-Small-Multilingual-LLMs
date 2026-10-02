@@ -1,0 +1,13 @@
+calibration,k,budget_chunks,pairwise_jaccard_mean,pairwise_jaccard_std,jaccard_vs_full_pool_mean,n_seeds
+en,2,60,1.0,0.0,1.0,5
+en,4,60,1.0,0.0,1.0,5
+en,6,60,1.0,0.0,1.0,5
+hi,2,60,1.0,0.0,1.0,5
+hi,4,60,1.0,0.0,1.0,5
+hi,6,60,1.0,0.0,1.0,5
+mr,2,60,1.0,0.0,1.0,5
+mr,4,60,1.0,0.0,1.0,5
+mr,6,60,1.0,0.0,1.0,5
+mixed,2,60,1.0,0.0,1.0,5
+mixed,4,60,1.0,0.0,1.0,5
+mixed,6,60,1.0,0.0,1.0,5

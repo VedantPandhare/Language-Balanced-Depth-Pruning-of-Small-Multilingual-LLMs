@@ -1,0 +1,43 @@
+{
+  "model_key": "gemma",
+  "model_id": "unsloth/gemma-2-2b",
+  "parameters": 2614341888,
+  "layers": 26,
+  "hidden_size": 2304,
+  "attention_heads": 8,
+  "kv_heads": 4,
+  "vocab_size": 256000,
+  "block_path": "model.layers",
+  "transformers": "4.56.2",
+  "torch": "2.5.1+cu121",
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "dtype": "torch.bfloat16",
+  "seq_len": 256,
+  "calib_pool_chunks": 200,
+  "eval_chunks": 100,
+  "n_seeds": 5,
+  "seeded_budget": 60,
+  "budgets": [
+    3,
+    6,
+    15,
+    30,
+    60,
+    150
+  ],
+  "n_random_seeds": 10,
+  "seed": 42,
+  "baseline_ppl": {
+    "en": 9.779314600880841,
+    "hi": 8.207738162919988,
+    "mr": 9.757563940479722
+  },
+  "baseline_bpc": {
+    "en": 0.7866559190825329,
+    "hi": 1.250373127933195,
+    "mr": 1.5933965661757195
+  },
+  "unique_configs_evaluated": 43,
+  "belebele": true,
+  "n_belebele": 300
+}

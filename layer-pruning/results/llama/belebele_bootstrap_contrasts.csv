@@ -1,0 +1,13 @@
+k,eval_language,contrast,same_layer_set,acc_diff,ci_low,ci_high,significant
+2,hi,en vs hi,False,-0.05,-0.13,0.023333333333333334,False
+2,hi,en vs mixed,False,-0.05,-0.12333333333333334,0.023416666666666214,False
+2,mr,en vs mr,False,-0.05,-0.10666666666666667,0.01,False
+2,mr,en vs mixed,False,-0.06333333333333334,-0.12333333333333334,-0.0033333333333333335,True
+4,hi,en vs hi,True,0.0,0.0,0.0,False
+4,hi,en vs mixed,True,0.0,0.0,0.0,False
+4,mr,en vs mr,True,0.0,0.0,0.0,False
+4,mr,en vs mixed,True,0.0,0.0,0.0,False
+6,hi,en vs hi,True,0.0,0.0,0.0,False
+6,hi,en vs mixed,True,0.0,0.0,0.0,False
+6,mr,en vs mr,True,0.0,0.0,0.0,False
+6,mr,en vs mixed,True,0.0,0.0,0.0,False
