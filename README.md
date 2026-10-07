@@ -1,4 +1,4 @@
-# Language-dependent layer redundancy in small multi-lingual LLMs
+# Language-Balanced layer redundancy in small multi-lingual LLMs
 
 > **Working title:** Do Small LLMs Share Redundant Layers Across Languages? Language-Aware Layer Pruning for English, Hindi, and Marathi
 
