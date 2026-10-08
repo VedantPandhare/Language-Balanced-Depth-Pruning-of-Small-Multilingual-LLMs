@@ -90,7 +90,7 @@ BELEBELE_RANDOM_SEEDS = 2           # random-pruning controls evaluated on Beleb
 BELEBELE_CODES = {"en": "eng_Latn", "hi": "hin_Deva", "mr": "mar_Deva"}
 
 ROOT = Path.cwd()                                   # run from the code/ folder
-DATA_CACHE = ROOT / "data_cache"; DATA_CACHE.mkdir(exist_ok=True)
+DATA_CACHE = ROOT.parent / "data" / "calibration-cache"; DATA_CACHE.mkdir(parents=True, exist_ok=True)
 RESULTS_ROOT = ROOT.parent / "results" if ROOT.name == "code" else ROOT / "results"
 OUTPUT_DIR = RESULTS_ROOT / MODEL_KEY; OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
