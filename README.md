@@ -1,72 +1,106 @@
 # Language-Balanced Depth Pruning of Small Multilingual LLMs
 
-Research code and released experiment artifacts for studying whether transformer
-layer redundancy is language-dependent in small multilingual language models.
+Research code and experiment artifacts for studying calibration-language
+sensitivity in Block Influence (BI) pruning of small multilingual language
+models.
 
-The experiments compare English, Hindi, Marathi, and mixed-language calibration
-for Qwen, Llama, and Gemma models. They measure layer influence, pruning
-stability, perplexity, tokenizer behavior, calibration-budget effects, and
-downstream performance on Belebele.
+The current v4 study tests whether English-only calibration produces less
+robust pruning decisions for Hindi and Marathi, and whether equal-budget
+language-balanced calibration improves block selection. Tamil is included as
+a held-out language from a different Indic script and language family.
 
 ## Research questions
 
-1. Do layer-importance rankings differ between English and Indic text?
-2. How does English-calibrated pruning affect Indic-language perplexity?
-3. Can a small multilingual calibration mixture preserve performance across
-   languages?
+1. Do BI rankings and selected pruning sets differ across English, Hindi,
+   Marathi, and Tamil?
+2. Does English-only calibration transfer worse than matched-language or
+   language-balanced calibration?
+3. Which equal-budget language-balanced aggregator (raw mean, rank mean, or
+   minimax rank) is most robust, including on held-out Tamil?
+
+## Experimental scope
+
+- Models: Qwen2.5-1.5B-Instruct, Llama-3.2-1B, and Gemma-2-2B.
+- Calibration languages: English, Hindi, and Marathi.
+- Held-out control language: Tamil; it is evaluated but is not included in the
+  language-balanced aggregators.
+- Pruning levels: 2, 4, and 6 transformer blocks.
+- Primary calibration budget: 150 chunks for every selector.
+- Aggregators: raw BI mean, normalized rank mean, and minimax normalized rank.
+- Primary outcomes: pruning-set stability and per-language perplexity changes.
+
+The current study does not use healing or post-pruning fine-tuning. Belebele
+and the calibration-budget sweep remain optional appendix experiments and are
+disabled in the primary run.
 
 ## Repository structure
 
 | Path | Purpose |
 | --- | --- |
 | [`code/`](code/) | Experiment notebooks and execution utilities |
-| [`code/executed_runs/`](code/executed_runs/) | Executed v3 notebooks for each model |
-| [`data/calibration-cache/`](data/calibration-cache/) | Exact Wikipedia article samples and Belebele subsets used in the reported runs |
-| [`docs/research-guide.md`](docs/research-guide.md) | Research protocol and experiment design |
-| [`results/`](results/) | Per-model metrics, pruning sets, figures, and configuration files |
+| [`code/v4_robust_language_balanced_block_pruning.ipynb`](code/v4_robust_language_balanced_block_pruning.ipynb) | Current Colab/A100 experiment |
+| [`code/executed_runs/`](code/executed_runs/) | Executed notebooks retained for provenance |
+| [`data/calibration-cache/`](data/calibration-cache/) | Deterministic calibration and evaluation samples |
+| [`docs/research-guide.md`](docs/research-guide.md) | Original research protocol |
+| [`results/`](results/) | Archived v3 experiment outputs |
+| `results_v4/` | Restartable outputs created by v4 runs |
+| `paper_v4_assets/` | Combined v4 tables, manifests, and figures |
 
-The versioned notebooks are retained for provenance:
+The v1-v3 notebooks are retained for provenance. The v4 notebook is the source
+for the revised claims and new results.
 
-- `v3_final_language_aware_layer_pruning.ipynb` is the final experiment.
-- `v2_corrected_language_aware_layer_pruning.ipynb` is the corrected
-  intermediate version.
-- `v1_original_language_aware_layer_pruning.ipynb` is the original pilot and
-  is not suitable for reproducing the reported results.
+## Run the v4 experiments
 
-## Reproducing the experiments
-
-Install the Python dependencies:
+Install dependencies in a fresh Colab A100 runtime:
 
 ```bash
-pip install torch transformers datasets accelerate scipy pandas matplotlib nbclient nbformat ipykernel
+pip install -q "torch>=2.5" "transformers>=4.56" datasets accelerate sentencepiece scipy pandas matplotlib nbclient nbformat ipykernel
+hf auth login
 ```
 
-Run from the repository root:
+Llama and Gemma require access to their official gated Hugging Face
+repositories. Run each model sequentially from the repository root:
+
+```bash
+cd code
+
+RUN_REFERENCE_SWEEP=1 RUN_BUDGET_SWEEP=0 RUN_BELEBELE=0 MODEL_KEY=qwen \
+  python tools/run_nb.py v4_robust_language_balanced_block_pruning.ipynb executed_runs/v4_qwen.ipynb .
+
+RUN_REFERENCE_SWEEP=1 RUN_BUDGET_SWEEP=0 RUN_BELEBELE=0 MODEL_KEY=llama \
+  python tools/run_nb.py v4_robust_language_balanced_block_pruning.ipynb executed_runs/v4_llama.ipynb .
+
+RUN_REFERENCE_SWEEP=1 RUN_BUDGET_SWEEP=0 RUN_BELEBELE=0 MODEL_KEY=gemma \
+  python tools/run_nb.py v4_robust_language_balanced_block_pruning.ipynb executed_runs/v4_gemma.ipynb .
+
+cd ..
+python code/tools/make_v4_paper_assets.py
+```
+
+Set `RESULTS_ROOT` and `DATA_CACHE_DIR` to persistent Google Drive paths when
+running on Colab. The notebook caches influence arrays and each evaluated
+pruning configuration, so repeating an interrupted model run resumes completed
+work. `PAPER_ASSETS_DIR` optionally changes the asset builder's output path.
+
+## Reproduce the archived v3 experiments
 
 ```bash
 cd code
 MODEL_KEY=qwen  python tools/run_nb.py v3_final_language_aware_layer_pruning.ipynb executed_runs/v3_qwen.ipynb .
 MODEL_KEY=llama python tools/run_nb.py v3_final_language_aware_layer_pruning.ipynb executed_runs/v3_llama.ipynb .
 MODEL_KEY=gemma python tools/run_nb.py v3_final_language_aware_layer_pruning.ipynb executed_runs/v3_gemma.ipynb .
-```
-
-Each run writes its outputs to `results/<model>/`. The notebooks use the
-versioned cache in `data/calibration-cache/`; cached data is not regenerated
-unless it is missing.
-
-To regenerate derived figures and tables:
-
-```bash
+cd ..
 python code/tools/make_paper_assets.py
 ```
 
-The reported runs used Python 3.12, PyTorch 2.5.1+cu121, Transformers 4.56.2,
-and bfloat16. Model weights are downloaded from Hugging Face on first use and
-are not stored in this repository.
+The archived v3 notebook used `unsloth/` mirrors by default. The v4 notebook
+uses the official model repositories. Model weights are downloaded from
+Hugging Face and are not stored in this repository.
 
 ## Scope and provenance
 
-This repository contains the computational research artifacts only. The
-`results/` directory contains the outputs currently associated with the
-reported experiments; the notebooks and cached inputs provide the execution
-history needed to audit them.
+This repository contains computational research artifacts. The paper PDF and
+LaTeX manuscript are intentionally maintained outside version control. Claims
+about Tamil, late-layer concentration, and the strongest aggregation rule
+should be finalized only after all three v4 model runs and confidence-interval
+analyses complete.
