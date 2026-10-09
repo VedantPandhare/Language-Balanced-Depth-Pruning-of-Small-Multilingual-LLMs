@@ -1,0 +1,73 @@
+{
+  "model_key": "gemma",
+  "model_id": "google/gemma-2-2b",
+  "model_revision": "c5ebcd40d208330abc697524c919956e692655cf",
+  "parameters": 2614341888,
+  "layers": 26,
+  "hidden_size": 2304,
+  "attention_heads": 8,
+  "kv_heads": 4,
+  "vocab_size": 256000,
+  "block_path": "model.layers",
+  "transformers": "4.56.2",
+  "torch": "2.11.0+cu130",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "dtype": "torch.bfloat16",
+  "seq_len": 256,
+  "calib_pool_chunks": 200,
+  "eval_chunks": 200,
+  "languages": [
+    "en",
+    "hi",
+    "mr",
+    "ta"
+  ],
+  "aggregation_languages": [
+    "en",
+    "hi",
+    "mr"
+  ],
+  "conditions": [
+    "en",
+    "hi",
+    "mr",
+    "ta",
+    "lb_mean",
+    "lb_rank_mean",
+    "lb_minimax_rank"
+  ],
+  "n_seeds": 5,
+  "primary_budget": 150,
+  "budgets": [
+    15,
+    30,
+    60,
+    90,
+    150
+  ],
+  "n_random_seeds": 10,
+  "seed": 42,
+  "baseline_ppl": {
+    "en": 8.916272197047281,
+    "hi": 8.879327561890381,
+    "mr": 9.15388915611164,
+    "ta": 6.057349036244941
+  },
+  "baseline_bpc": {
+    "en": 0.7270703892020756,
+    "hi": 1.2618824739357268,
+    "mr": 1.5084734668785746,
+    "ta": 1.233335632928146
+  },
+  "unique_configs_evaluated": 40,
+  "evaluation_cache_stats": {
+    "computed": 40,
+    "loaded": 0,
+    "compute_seconds": 329.60619950294495
+  },
+  "eval_fingerprint": "a556277ddb5b4ab0",
+  "run_reference_sweep": true,
+  "run_budget_sweep": false,
+  "belebele": false,
+  "n_belebele": 0
+}
