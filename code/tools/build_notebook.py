@@ -13,7 +13,7 @@ especially in later layers, and do language-balanced selectors transfer to held-
 
 Primary calibration comparisons use the same total number of tokens. Language-balanced selectors are
 computed over English, Hindi, and Marathi; Tamil is a held-out cross-script Indic control. The notebook is
-restartable: influence arrays and every evaluated pruning configuration are cached under `results_v4/`.
+restartable: influence arrays and every evaluated pruning configuration are cached under `results/`.
 
 ## What changed vs. v1 (and why it matters for the paper)
 
@@ -108,7 +108,7 @@ BELEBELE_CODES = {"en": "eng_Latn", "hi": "hin_Deva", "mr": "mar_Deva", "ta": "t
 ROOT = Path.cwd()                                   # run from the code/ folder
 _default_data_cache = ROOT.parent / "data" / "calibration-cache" if ROOT.name == "code" else ROOT / "data" / "calibration-cache"
 DATA_CACHE = Path(os.environ.get("DATA_CACHE_DIR", _default_data_cache)); DATA_CACHE.mkdir(parents=True, exist_ok=True)
-_default_results = ROOT.parent / "results_v4" if ROOT.name == "code" else ROOT / "results_v4"
+_default_results = ROOT.parent / "results" if ROOT.name == "code" else ROOT / "results"
 RESULTS_ROOT = Path(os.environ.get("RESULTS_ROOT", _default_results)); RESULTS_ROOT.mkdir(parents=True, exist_ok=True)
 OUTPUT_DIR = RESULTS_ROOT / MODEL_KEY; OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 NLL_CACHE_DIR = OUTPUT_DIR / "nll_cache"; NLL_CACHE_DIR.mkdir(exist_ok=True)

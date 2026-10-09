@@ -11,7 +11,7 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[2]
-RESULTS = Path(os.environ.get("RESULTS_ROOT", ROOT / "results_v4"))
+RESULTS = Path(os.environ.get("RESULTS_ROOT", ROOT / "results"))
 OUTPUT = Path(os.environ.get("PAPER_ASSETS_DIR", ROOT / "paper_v4_assets"))
 FIGURES = OUTPUT / "figures"
 TABLES = OUTPUT / "tables"

@@ -42,12 +42,12 @@ disabled in the primary run.
 | [`code/executed_runs/`](code/executed_runs/) | Executed notebooks retained for provenance |
 | [`data/calibration-cache/`](data/calibration-cache/) | Deterministic calibration and evaluation samples |
 | [`docs/research-guide.md`](docs/research-guide.md) | Original research protocol |
-| [`results/`](results/) | Archived v3 experiment outputs |
-| `results_v4/` | Restartable outputs created by v4 runs |
-| `paper_v4_assets/` | Combined v4 tables, manifests, and figures |
+| [`results/`](results/) | Canonical final v4 outputs for Qwen, Llama, and Gemma |
+| `paper_v4_assets/` | Optional generated tables, manifests, and figures |
 
-The v1-v3 notebooks are retained for provenance. The v4 notebook is the source
-for the revised claims and new results.
+The v1-v3 notebooks are retained for historical provenance, but their result
+artifacts are not mixed with the final outputs. The v4 notebook is the source
+for the revised claims and the canonical `results/` directory.
 
 ## Run the v4 experiments
 
@@ -65,13 +65,13 @@ repositories. Run each model sequentially from the repository root:
 cd code
 
 RUN_REFERENCE_SWEEP=1 RUN_BUDGET_SWEEP=0 RUN_BELEBELE=0 MODEL_KEY=qwen \
-  python tools/run_nb.py v4_robust_language_balanced_block_pruning.ipynb executed_runs/v4_qwen.ipynb .
+  python tools/run_nb.py v4_robust_language_balanced_block_pruning.ipynb ../executed_runs_v4/v4_qwen.ipynb .
 
 RUN_REFERENCE_SWEEP=1 RUN_BUDGET_SWEEP=0 RUN_BELEBELE=0 MODEL_KEY=llama \
-  python tools/run_nb.py v4_robust_language_balanced_block_pruning.ipynb executed_runs/v4_llama.ipynb .
+  python tools/run_nb.py v4_robust_language_balanced_block_pruning.ipynb ../executed_runs_v4/v4_llama.ipynb .
 
 RUN_REFERENCE_SWEEP=1 RUN_BUDGET_SWEEP=0 RUN_BELEBELE=0 MODEL_KEY=gemma \
-  python tools/run_nb.py v4_robust_language_balanced_block_pruning.ipynb executed_runs/v4_gemma.ipynb .
+  python tools/run_nb.py v4_robust_language_balanced_block_pruning.ipynb ../executed_runs_v4/v4_gemma.ipynb .
 
 cd ..
 python code/tools/make_v4_paper_assets.py
@@ -82,25 +82,18 @@ running on Colab. The notebook caches influence arrays and each evaluated
 pruning configuration, so repeating an interrupted model run resumes completed
 work. `PAPER_ASSETS_DIR` optionally changes the asset builder's output path.
 
-## Reproduce the archived v3 experiments
+## Legacy experiments
 
-```bash
-cd code
-MODEL_KEY=qwen  python tools/run_nb.py v3_final_language_aware_layer_pruning.ipynb executed_runs/v3_qwen.ipynb .
-MODEL_KEY=llama python tools/run_nb.py v3_final_language_aware_layer_pruning.ipynb executed_runs/v3_llama.ipynb .
-MODEL_KEY=gemma python tools/run_nb.py v3_final_language_aware_layer_pruning.ipynb executed_runs/v3_gemma.ipynb .
-cd ..
-python code/tools/make_paper_assets.py
-```
-
-The archived v3 notebook used `unsloth/` mirrors by default. The v4 notebook
-uses the official model repositories. Model weights are downloaded from
-Hugging Face and are not stored in this repository.
+The v1-v3 notebooks and their executed notebooks remain under `code/` for
+historical inspection. Their outputs are not part of the canonical
+`results/` directory. The v4 notebook uses the organization-hosted model
+repositories; model weights are downloaded from Hugging Face and are not
+stored in this repository.
 
 ## Scope and provenance
 
 This repository contains computational research artifacts. The paper PDF and
-LaTeX manuscript are intentionally maintained outside version control. Claims
-about Tamil, late-layer concentration, and the strongest aggregation rule
-should be finalized only after all three v4 model runs and confidence-interval
-analyses complete.
+LaTeX manuscript are intentionally maintained outside version control. The
+final v4 outputs include all three model runs, their exact checkpoint
+revisions, article identifiers, pruning sets, random controls, and
+confidence-interval analyses.

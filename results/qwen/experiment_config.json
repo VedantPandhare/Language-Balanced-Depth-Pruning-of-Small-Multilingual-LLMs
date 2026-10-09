@@ -1,0 +1,73 @@
+{
+  "model_key": "qwen",
+  "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+  "model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "parameters": 1543714304,
+  "layers": 28,
+  "hidden_size": 1536,
+  "attention_heads": 12,
+  "kv_heads": 2,
+  "vocab_size": 151665,
+  "block_path": "model.layers",
+  "transformers": "4.56.2",
+  "torch": "2.11.0+cu130",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "dtype": "torch.bfloat16",
+  "seq_len": 256,
+  "calib_pool_chunks": 200,
+  "eval_chunks": 200,
+  "languages": [
+    "en",
+    "hi",
+    "mr",
+    "ta"
+  ],
+  "aggregation_languages": [
+    "en",
+    "hi",
+    "mr"
+  ],
+  "conditions": [
+    "en",
+    "hi",
+    "mr",
+    "ta",
+    "lb_mean",
+    "lb_rank_mean",
+    "lb_minimax_rank"
+  ],
+  "n_seeds": 5,
+  "primary_budget": 150,
+  "budgets": [
+    15,
+    30,
+    60,
+    90,
+    150
+  ],
+  "n_random_seeds": 10,
+  "seed": 42,
+  "baseline_ppl": {
+    "en": 10.20713961564413,
+    "hi": 3.826564129490933,
+    "mr": 5.255736951077274,
+    "ta": 3.620360198671203
+  },
+  "baseline_bpc": {
+    "en": 0.7904899112773114,
+    "hi": 1.775713127946796,
+    "mr": 2.2836082264287656,
+    "ta": 1.9203325962217477
+  },
+  "unique_configs_evaluated": 39,
+  "evaluation_cache_stats": {
+    "computed": 39,
+    "loaded": 0,
+    "compute_seconds": 169.85784363746643
+  },
+  "eval_fingerprint": "2dab6c75f0878d25",
+  "run_reference_sweep": true,
+  "run_budget_sweep": false,
+  "belebele": false,
+  "n_belebele": 0
+}

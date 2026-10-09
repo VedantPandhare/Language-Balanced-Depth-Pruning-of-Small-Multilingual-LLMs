@@ -2,11 +2,13 @@
 /paper_tmlr/
 /*.pdf
 /*.tex
+*.npz
 
 # Local v4 execution artifacts duplicated by the official result bundle
 /executed_runs_v4/
 /logs_v4/
 /results_v4/
+/paper_v4_assets/
 
 # Tool and notebook caches
 /.tools/
