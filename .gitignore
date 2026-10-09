@@ -1,0 +1,16 @@
+# Local manuscript and submission package
+/paper_tmlr/
+/*.pdf
+/*.tex
+
+# Local v4 execution artifacts duplicated by the official result bundle
+/executed_runs_v4/
+/logs_v4/
+/results_v4/
+
+# Tool and notebook caches
+/.tools/
+/.matplotlib/
+**/__pycache__/
+**/.ipynb_checkpoints/
+*.py[cod]
