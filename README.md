@@ -1,99 +1,183 @@
-# Language-Balanced Depth Pruning of Small Multilingual LLMs
+<div align="center">
 
-Research code and experiment artifacts for studying calibration-language
-sensitivity in Block Influence (BI) pruning of small multilingual language
-models.
+# Calibration Language Shapes Block-Influence Pruning in Multilingual Language Models
 
-The current v4 study tests whether English-only calibration produces less
-robust pruning decisions for Hindi and Marathi, and whether equal-budget
-language-balanced calibration improves block selection. Tamil is included as
-a held-out language from a different Indic script and language family.
+**Vedant Pandhare** · **Piyush Dhoka**
 
-## Research questions
+Independent Researchers
 
-1. Do BI rankings and selected pruning sets differ across English, Hindi,
-   Marathi, and Tamil?
-2. Does English-only calibration transfer worse than matched-language or
-   language-balanced calibration?
-3. Which equal-budget language-balanced aggregator (raw mean, rank mean, or
-   minimax rank) is most robust, including on held-out Tamil?
+[Paper (arXiv, coming soon)](#citation) · [Results](results/) · [Experiment notebook](code/v4_robust_language_balanced_block_pruning.ipynb)
 
-## Experimental scope
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 
-- Models: Qwen2.5-1.5B-Instruct, Llama-3.2-1B, and Gemma-2-2B.
-- Calibration languages: English, Hindi, and Marathi.
-- Held-out control language: Tamil; it is evaluated but is not included in the
-  language-balanced aggregators.
-- Pruning levels: 2, 4, and 6 transformer blocks.
-- Primary calibration budget: 150 chunks for every selector.
-- Aggregators: raw BI mean, normalized rank mean, and minimax normalized rank.
-- Primary outcomes: pruning-set stability and per-language perplexity changes.
+</div>
 
-The current study does not use healing or post-pruning fine-tuning. Belebele
-and the calibration-budget sweep remain optional appendix experiments and are
-disabled in the primary run.
+---
+
+**TL;DR.** Block Influence (BI) is a training-free score used to choose which
+Transformer blocks to delete. We show that the score depends on the
+calibration language. English-only calibration systematically underestimates
+late-block influence for Hindi, Marathi, and Tamil in Qwen2.5-1.5B-Instruct,
+Llama-3.2-1B, and Gemma-2-2B, which changes which blocks get pruned.
+Language-balanced calibration often repairs the damage, but not on every
+architecture or pruning budget.
+
+<p align="center">
+  <img src="docs/figures/bi_profiles.png" width="100%" alt="Language-conditioned Block Influence per block for Qwen, Llama, and Gemma">
+</p>
+<p align="center"><em>Language-conditioned Block Influence. The shaded span is the predeclared late region. English (blue) sits below the Indian languages exactly where low-BI blocks are chosen for removal.</em></p>
+
+## Key findings
+
+1. **English underestimates late-block influence.** In the late region,
+   target-language BI is 20.7–55.5% higher than English BI across all nine
+   model–language pairs, and every late-minus-middle contrast has a 95%
+   bootstrap interval above zero. This includes held-out Tamil, which has a
+   different script and language family.
+2. **High rank correlation hides different pruning decisions.** English vs.
+   target Spearman ρ is 0.898–0.982, yet the selected block sets differ
+   (Jaccard as low as 0.33 at k = 2).
+3. **Balanced calibration often helps.** Averaging BI over equal
+   English/Hindi/Marathi budgets lowers perplexity for Qwen at k = 6
+   (English-only PPL is 1.37–1.50× balanced) and for Gemma at every depth
+   (1.19–1.61×), including held-out Tamil.
+4. **But it is not universal.** On Llama-3.2-1B at k = 2, balancing helps
+   Hindi and Marathi but raises Tamil perplexity about 17.5×. At larger
+   budgets both selectors pick the same blocks and collapse.
+5. **Rank-based aggregators don't beat the raw mean.** Rank mean and minimax
+   rank never dominate the raw BI mean.
+
+<p align="center">
+  <img src="docs/figures/english_vs_lb_ratio.png" width="100%" alt="English-only versus balanced calibration perplexity ratio">
+</p>
+<p align="center"><em>PPL(English-only) / PPL(balanced). Values above 1 favor balanced calibration. Note the Llama–Tamil reversal.</em></p>
+
+## Setup
+
+| | |
+| --- | --- |
+| Models | `Qwen/Qwen2.5-1.5B-Instruct` (28 blocks), `meta-llama/Llama-3.2-1B` (16), `google/gemma-2-2b` (26) |
+| Languages | English, Hindi, Marathi (calibration + evaluation); Tamil (held out from balancing) |
+| Data | Wikipedia 2023-11-01, 200 calibration + 200 disjoint evaluation articles per language, 256-token chunks |
+| Selectors | EN / HI / MR / TA monolingual; balanced raw mean, rank mean, minimax rank; equal 150-chunk budget |
+| Pruning | Remove k ∈ {2, 4, 6} blocks; no recovery fine-tuning |
+| Controls | 5 calibration seeds, 10 random block sets per k, hierarchical bootstrap CIs |
+
+Exact checkpoint revisions are recorded in each `results/<model>/experiment_config.json`.
 
 ## Repository structure
 
-| Path | Purpose |
-| --- | --- |
-| [`code/`](code/) | Experiment notebooks and execution utilities |
-| [`code/v4_robust_language_balanced_block_pruning.ipynb`](code/v4_robust_language_balanced_block_pruning.ipynb) | Current Colab/A100 experiment |
-| [`code/executed_runs/`](code/executed_runs/) | Executed notebooks retained for provenance |
-| [`data/calibration-cache/`](data/calibration-cache/) | Deterministic calibration and evaluation samples |
-| [`docs/research-guide.md`](docs/research-guide.md) | Original research protocol |
-| [`results/`](results/) | Canonical final v4 outputs for Qwen, Llama, and Gemma |
-| `paper_v4_assets/` | Optional generated tables, manifests, and figures |
+```
+.
+├── code/
+│   ├── v4_robust_language_balanced_block_pruning.ipynb   # main experiment (Colab / A100)
+│   ├── tools/
+│   │   ├── build_notebook.py         # generates the v4 notebook deterministically
+│   │   ├── run_nb.py                 # headless notebook executor
+│   │   ├── make_v4_paper_assets.py   # figures and tables from results/
+│   │   └── audit_claims.py           # checks the paper's key numbers against results/
+│   └── legacy/                       # v1-v3 notebooks and executed v3 runs (historical only)
+├── data/calibration-cache/           # cached EN/HI/MR Wikipedia samples (seed 42)
+├── results/{qwen,llama,gemma}/       # canonical v4 outputs (see results/README.md)
+├── docs/
+│   ├── figures/                      # figures used in this README
+│   └── research-guide.md             # original research protocol
+├── requirements.txt
+├── CITATION.cff
+└── LICENSE
+```
 
-The v1-v3 notebooks are retained for historical provenance, but their result
-artifacts are not mixed with the final outputs. The v4 notebook is the source
-for the revised claims and the canonical `results/` directory.
-
-## Run the v4 experiments
-
-Install dependencies in a fresh Colab A100 runtime:
+## Installation
 
 ```bash
-pip install -q "torch>=2.5" "transformers>=4.56" datasets accelerate sentencepiece scipy pandas matplotlib nbclient nbformat ipykernel
+git clone https://github.com/VedantPandhare/Language-Balanced-Depth-Pruning-of-Small-Multilingual-LLMs.git
+cd Language-Balanced-Depth-Pruning-of-Small-Multilingual-LLMs
+pip install -r requirements.txt
+```
+
+## Reproducing the paper
+
+### 1. Verify the reported numbers (CPU, seconds)
+
+```bash
+python code/tools/audit_claims.py
+# Claim audit passed: provenance, row counts, splits, late contrasts, and key PPL ratios.
+```
+
+This checks checkpoint provenance, row counts, the article-disjoint splits,
+all nine late-layer contrasts, and the key English-vs-balanced perplexity
+ratios against the released results.
+
+### 2. Re-run the experiments (GPU)
+
+The reported runs used one NVIDIA A100-SXM4-40GB, bfloat16, Transformers
+4.56.2, and PyTorch 2.11.0+cu130. Llama and Gemma are gated, so you need
+access on Hugging Face first:
+
+```bash
 hf auth login
+cd code
+mkdir -p ../executed_runs_v4
+for MODEL in qwen llama gemma; do
+  RUN_REFERENCE_SWEEP=1 RUN_BUDGET_SWEEP=0 RUN_BELEBELE=0 MODEL_KEY=$MODEL \
+    python tools/run_nb.py v4_robust_language_balanced_block_pruning.ipynb \
+      ../executed_runs_v4/v4_$MODEL.ipynb .
+done
+cd ..
 ```
 
-Llama and Gemma require access to their official gated Hugging Face
-repositories. Run each model sequentially from the repository root:
+Outputs are written to `results/<model>/`. Set `RESULTS_ROOT` and
+`DATA_CACHE_DIR` to persistent paths (for example, Google Drive on Colab).
+Influence arrays and every evaluated pruning configuration are cached, so an
+interrupted run resumes where it stopped. The notebook is generated from
+`code/tools/build_notebook.py`, so edit that file rather than the notebook.
+
+### 3. Rebuild figures and tables
 
 ```bash
-cd code
-
-RUN_REFERENCE_SWEEP=1 RUN_BUDGET_SWEEP=0 RUN_BELEBELE=0 MODEL_KEY=qwen \
-  python tools/run_nb.py v4_robust_language_balanced_block_pruning.ipynb ../executed_runs_v4/v4_qwen.ipynb .
-
-RUN_REFERENCE_SWEEP=1 RUN_BUDGET_SWEEP=0 RUN_BELEBELE=0 MODEL_KEY=llama \
-  python tools/run_nb.py v4_robust_language_balanced_block_pruning.ipynb ../executed_runs_v4/v4_llama.ipynb .
-
-RUN_REFERENCE_SWEEP=1 RUN_BUDGET_SWEEP=0 RUN_BELEBELE=0 MODEL_KEY=gemma \
-  python tools/run_nb.py v4_robust_language_balanced_block_pruning.ipynb ../executed_runs_v4/v4_gemma.ipynb .
-
-cd ..
-python code/tools/make_v4_paper_assets.py
+python code/tools/make_v4_paper_assets.py   # writes paper_v4_assets/ (override with PAPER_ASSETS_DIR)
 ```
 
-Set `RESULTS_ROOT` and `DATA_CACHE_DIR` to persistent Google Drive paths when
-running on Colab. The notebook caches influence arrays and each evaluated
-pruning configuration, so repeating an interrupted model run resumes completed
-work. `PAPER_ASSETS_DIR` optionally changes the asset builder's output path.
+## Limitations
+
+- Three models of 1.2B–2.6B parameters; results may not transfer to larger
+  models or other families.
+- Evaluation is Wikipedia language-modeling perplexity, not downstream tasks
+  or generation quality.
+- BI itself is brittle on Llama-3.2-1B: at k = 2 and k = 4, BI-selected sets
+  do worse than the random-set average.
+- Calibration language should be treated as part of the pruning algorithm
+  and validated per model, pruning budget, and deployment language.
 
 ## Legacy experiments
 
-The v1-v3 notebooks and their executed notebooks remain under `code/` for
-historical inspection. Their outputs are not part of the canonical
-`results/` directory. The v4 notebook uses the organization-hosted model
-repositories; model weights are downloaded from Hugging Face and are not
-stored in this repository.
+`code/legacy/` contains the v1–v3 notebooks, the executed v3 runs, and the v3
+asset builder for provenance. v2 fixed several v1 issues, including
+calibration/evaluation leakage and last-block influence measured after the
+final RMSNorm (see the change table in `code/tools/build_notebook.py`). None
+of the legacy outputs are used in the paper.
 
-## Scope and provenance
+## Citation
 
-This repository contains computational research artifacts. The paper PDF and
-LaTeX manuscript are intentionally maintained outside version control. The
-final v4 outputs include all three model runs, their exact checkpoint
-revisions, article identifiers, pruning sets, random controls, and
-confidence-interval analyses.
+If you use this code or these results, please cite the paper. The arXiv
+identifier will be added here once it is available.
+
+```bibtex
+@misc{pandhare2026calibration,
+  title  = {Calibration Language Shapes Block-Influence Pruning in Multilingual Language Models},
+  author = {Pandhare, Vedant and Dhoka, Piyush},
+  year   = {2026},
+  note   = {Preprint}
+}
+```
+
+## License
+
+Code and released results are under the [MIT License](LICENSE). Model weights
+are not redistributed and remain under their original licenses. Wikipedia
+text is licensed under CC BY-SA.
+
+## Contact
+
+Vedant Pandhare (vedant11734@gmail.com) · Piyush Dhoka (piyushdhoka007@gmail.com)

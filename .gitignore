@@ -9,6 +9,8 @@
 /logs_v4/
 /results_v4/
 /paper_v4_assets/
+# Superseded Colab run that used unsloth/* mirror checkpoints for Llama and Gemma
+/colab_v4/
 
 # Tool and notebook caches
 /.tools/

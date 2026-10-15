@@ -1,0 +1,18 @@
+# Experiment (GPU; reported runs: Transformers 4.56.2, PyTorch 2.11.0+cu130, A100-SXM4-40GB)
+torch>=2.5
+transformers>=4.56
+accelerate
+datasets
+sentencepiece
+
+# Analysis, figures, and claim audit (CPU)
+numpy
+pandas
+scipy
+matplotlib
+jinja2
+
+# Headless notebook execution (code/tools/run_nb.py)
+nbformat
+nbclient
+ipykernel

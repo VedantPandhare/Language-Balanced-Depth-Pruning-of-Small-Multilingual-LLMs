@@ -1,6 +1,7 @@
 """Builds every figure (PDF) and table (.tex) used in the paper from the CSVs in ../results.
 
-Usage (from the project root):  python code/tools/make_paper_assets.py
+Legacy v3 asset builder, kept for provenance; its inputs are not in this repository.
+Usage (from the project root):  python code/legacy/make_v3_paper_assets.py
 Outputs: paper/figures/*.pdf, paper/tables/*.tex, paper/tables/key_numbers.json
 """
 import json

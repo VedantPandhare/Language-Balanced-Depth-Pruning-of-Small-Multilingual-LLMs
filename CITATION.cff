@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this code or these results, please cite the paper."
+title: "Calibration Language Shapes Block-Influence Pruning in Multilingual Language Models"
+authors:
+  - family-names: Pandhare
+    given-names: Vedant
+    email: vedant11734@gmail.com
+  - family-names: Dhoka
+    given-names: Piyush
+    email: piyushdhoka007@gmail.com
+license: MIT
+repository-code: "https://github.com/VedantPandhare/Language-Balanced-Depth-Pruning-of-Small-Multilingual-LLMs"
+keywords:
+  - depth pruning
+  - block influence
+  - calibration data
+  - multilingual language models
+  - Indian languages
+preferred-citation:
+  type: article
+  title: "Calibration Language Shapes Block-Influence Pruning in Multilingual Language Models"
+  authors:
+    - family-names: Pandhare
+      given-names: Vedant
+    - family-names: Dhoka
+      given-names: Piyush
+  year: 2026
+  notes: "Preprint"
