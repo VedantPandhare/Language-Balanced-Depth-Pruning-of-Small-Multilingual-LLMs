@@ -6,8 +6,9 @@
 
 Independent Researchers
 
-[Paper (arXiv, coming soon)](#citation) · [Results](results/) · [Experiment notebook](code/v4_robust_language_balanced_block_pruning.ipynb)
+[Paper (arXiv:2610.21383)](https://arxiv.org/abs/2610.21383) · [Results](results/) · [Experiment notebook](code/v4_robust_language_balanced_block_pruning.ipynb)
 
+[![arXiv](https://img.shields.io/badge/arXiv-2610.21383-b31b1b.svg)](https://arxiv.org/abs/2610.21383)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 
@@ -160,15 +161,19 @@ of the legacy outputs are used in the paper.
 
 ## Citation
 
-If you use this code or these results, please cite the paper. The arXiv
-identifier will be added here once it is available.
+If you use this code or these results, please cite the
+[paper](https://arxiv.org/abs/2610.21383).
 
 ```bibtex
 @misc{pandhare2026calibration,
-  title  = {Calibration Language Shapes Block-Influence Pruning in Multilingual Language Models},
-  author = {Pandhare, Vedant and Dhoka, Piyush},
-  year   = {2026},
-  note   = {Preprint}
+  title         = {Calibration Language Shapes Block-Influence Pruning in Multilingual Language Models},
+  author        = {Pandhare, Vedant and Dhoka, Piyush},
+  year          = {2026},
+  eprint        = {2610.21383},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  doi           = {10.48550/arXiv.2610.21383},
+  url           = {https://arxiv.org/abs/2610.21383}
 }
 ```
 

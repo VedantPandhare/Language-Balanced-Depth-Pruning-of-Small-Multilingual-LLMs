@@ -18,6 +18,7 @@ keywords:
   - Indian languages
 preferred-citation:
   type: article
+  journal: "arXiv preprint arXiv:2610.21383"
   title: "Calibration Language Shapes Block-Influence Pruning in Multilingual Language Models"
   authors:
     - family-names: Pandhare
@@ -25,4 +26,9 @@ preferred-citation:
     - family-names: Dhoka
       given-names: Piyush
   year: 2026
-  notes: "Preprint"
+  doi: "10.48550/arXiv.2610.21383"
+  url: "https://arxiv.org/abs/2610.21383"
+  identifiers:
+    - type: other
+      value: "arXiv:2610.21383"
+      description: "arXiv identifier"
